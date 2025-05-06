@@ -33,7 +33,6 @@ public class PacienteController {
 
     /**
      * Obtiene una lista de todos los pacientes.
-     * 
      * @return Lista de objetos {@link Paciente}.
      */
     @GetMapping
