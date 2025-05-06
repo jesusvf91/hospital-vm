@@ -34,7 +34,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=jesusvf91_back-springboot \
+            -Dsonar.projectKey=jesusvf91_hospital-vm \
             -Dsonar.organization=jesusvf91 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${SONAR_TOKEN}
