@@ -49,10 +49,10 @@ public class PacienteService {
      * @return Objeto {@link Paciente} guardado o existente.
      */
     public Paciente savePaciente(Paciente paciente) {
-        Paciente existingPacienteByCorreo = pacienteRepository.findByRun(paciente.getRun());
+        Paciente pacientePorRut = pacienteRepository.findByRun(paciente.getRun());
 
-        if (paciente.getRun() != null && existingPacienteByCorreo != null) {
-            return existingPacienteByCorreo;
+        if (paciente.getRun() != null && pacientePorRut != null) {
+            return pacientePorRut;
         }
 
         return pacienteRepository.save(paciente);
