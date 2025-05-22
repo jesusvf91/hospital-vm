@@ -1,14 +1,12 @@
-# Imagen base con Java
-FROM eclipse-temurin:17-jdk-alpine
-
-# Directorio de trabajo dentro del contenedor
+# Etapa 1: construir el JAR
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
-# Copiar el jar generado (ajusta el nombre si es distinto)
-COPY target/*.jar app.jar
-
-# Expone el puerto esperado por Render
+# Etapa 2: usar solo el JAR generado
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
