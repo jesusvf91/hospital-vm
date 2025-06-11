@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.PutMapping;
  * pacientes.
  * Proporciona endpoints para listar, obtener, crear, actualizar y eliminar
  * pacientes.
+ * 
+ * <p>Este controlador utiliza el servicio {@link PacienteService} para realizar
+ * las operaciones CRUD sobre los pacientes.</p>
  */
 @RestController
 @RequestMapping("/pacientes")
