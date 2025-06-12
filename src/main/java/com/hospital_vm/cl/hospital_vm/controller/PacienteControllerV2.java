@@ -1,8 +1,10 @@
 package com.hospital_vm.cl.hospital_vm.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hospital_vm.cl.hospital_vm.assemblers.PacienteModelAssembler;
 import com.hospital_vm.cl.hospital_vm.model.Paciente;
 import com.hospital_vm.cl.hospital_vm.service.PacienteService;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,19 +31,23 @@ import org.springframework.web.bind.annotation.PutMapping;
  * las operaciones CRUD sobre los pacientes.</p>
  */
 @RestController
-@RequestMapping("/pacientes")
-public class PacienteController {
+@RequestMapping("/v2/pacientes")
+public class PacienteControllerV2 {
 
     @Autowired
     private PacienteService pacienteService;
+
+    @Autowired
+    private PacienteModelAssembler assembler;
 
     /**
      * Obtiene una lista de todos los pacientes.
      * @return Lista de objetos {@link Paciente}.
      */
     @GetMapping
-    public ResponseEntity<List<Paciente>> listarPacientes() {
-        List<Paciente> pacientes = pacienteService.getAllPacientes();
+    public ResponseEntity<List<EntityModel<Paciente>>> listarPacientes() {
+        List<EntityModel<Paciente>> pacientes = pacienteService.getAllPacientes().stream().map(assembler::toModel)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(pacientes);
     }
 
@@ -51,12 +58,15 @@ public class PacienteController {
      * @return Objeto {@link Paciente} correspondiente al ID proporcionado.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> obtenerPacientePorId(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<Paciente>> obtenerPacientePorId(@PathVariable Long id) {
         Paciente paciente = pacienteService.getPacienteById(id);
         if (paciente == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok(paciente);
+
+        EntityModel<Paciente> pacienteModel = assembler.toModel(paciente);
+
+        return ResponseEntity.ok(pacienteModel);
     }
 
     /**
@@ -67,9 +77,12 @@ public class PacienteController {
      * @return Objeto {@link Paciente} guardado.
      */
     @PostMapping
-    public ResponseEntity<Paciente> guardarPaciente(@RequestBody Paciente paciente) {
+    public ResponseEntity<EntityModel<Paciente>> guardarPaciente(@RequestBody Paciente paciente) {
         Paciente nuevoPaciente = pacienteService.savePaciente(paciente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPaciente);
+
+        EntityModel<Paciente> pacienteModel = assembler.toModel(nuevoPaciente);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteModel);
     }
 
     /**
