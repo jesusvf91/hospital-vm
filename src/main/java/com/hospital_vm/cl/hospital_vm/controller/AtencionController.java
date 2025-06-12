@@ -56,7 +56,7 @@ public class AtencionController {
             @ApiResponse(responseCode = "200", description = "Lista de atenciones obtenida correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Atencion.class)))
     })
     @GetMapping
-    public ResponseEntity<List<Atencion>> listarAtenciones() {
+    public ResponseEntity<List<Atencion>> listarAtenciones() { 
         List<Atencion> atenciones = atencionService.getAllAtenciones();
         return ResponseEntity.ok(atenciones);
     }
@@ -74,7 +74,8 @@ public class AtencionController {
     })
     @GetMapping("/pacientes/{idPaciente}")
     public ResponseEntity<List<Atencion>> obtenerAtencionesPorPaciente(@PathVariable Long idPaciente) {
-        logger.info("Solicitud para obtener atenciones del paciente con ID: {}", idPaciente);
+        logger.info("[obtenerAtencionesPorPaciente] Inicio");
+        logger.debug("[obtenerAtencionesPorPaciente] Obteeniendo atenciones para el paciente con ID: {}", idPaciente);
 
         List<Atencion> atenciones = atencionService.getAtencionesByPacienteId(idPaciente);
 
@@ -83,7 +84,8 @@ public class AtencionController {
             return ResponseEntity.notFound().build();
         }
 
-        logger.info("Se encontraron {} atenciones para el paciente con ID: {}", atenciones.size(), idPaciente);
+        logger.info("[obtenerAtencionesPorPaciente] Se encontraron {} atenciones para el paciente con ID: {}", atenciones.size(), idPaciente);
+        logger.info("[obtenerAtencionesPorPaciente] Fin", atenciones.size(), idPaciente);
         return ResponseEntity.ok(atenciones);
     }
 
